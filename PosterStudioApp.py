@@ -1,3 +1,4 @@
+import sys
 import os
 import glob
 import re
@@ -6,11 +7,18 @@ import webbrowser
 import tkinter as tk
 from tkinter import filedialog, messagebox
 import customtkinter as ctk
-from PIL import Image
+from PIL import Image, ImageTk
 
 # Set CustomTkinter theme & appearance
 ctk.set_appearance_mode("Dark")
 ctk.set_default_color_theme("blue")
+
+def get_asset_path(filename):
+    if getattr(sys, 'frozen', False):
+        base_dir = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+    else:
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+    return os.path.join(base_dir, "assets", filename)
 
 def natural_sort_key(s):
     return [int(text) if text.isdigit() else text.lower() for text in re.split(r'(\d+)', s)]
@@ -20,14 +28,35 @@ class PosterStudioApp(ctk.CTk):
         super().__init__()
 
         self.title("Poster Studio Desktop - A4 Poster Generator")
-        self.geometry("1100 x 720")
+        self.geometry("1100x720")
         self.minsize(950, 620)
+
+        # Set Window & Taskbar Icon
+        self.set_app_icon()
 
         self.image_paths = []
         self.thumbnail_images = []
 
         self.setup_ui()
         self.auto_load_current_directory()
+
+    def set_app_icon(self):
+        icon_ico = get_asset_path("icon.ico")
+        icon_png = get_asset_path("icon.png")
+
+        if os.path.exists(icon_ico):
+            try:
+                self.iconbitmap(icon_ico)
+            except Exception as e:
+                print(f"Could not set .ico window icon: {e}")
+        
+        if os.path.exists(icon_png):
+            try:
+                img = Image.open(icon_png)
+                self._icon_photo = ImageTk.PhotoImage(img)
+                self.iconphoto(False, self._icon_photo)
+            except Exception as e:
+                print(f"Could not set .png iconphoto: {e}")
 
     def open_github(self):
         webbrowser.open("https://github.com/blazecodeprakhar")
@@ -46,13 +75,26 @@ class PosterStudioApp(ctk.CTk):
         logo_frame = ctk.CTkFrame(self.sidebar, fg_color="transparent")
         logo_frame.pack(fill="x", padx=15, pady=(15, 10))
 
+        header_top = ctk.CTkFrame(logo_frame, fg_color="transparent")
+        header_top.pack(anchor="w", fill="x")
+
+        icon_png_path = get_asset_path("icon.png")
+        if os.path.exists(icon_png_path):
+            try:
+                logo_img_pil = Image.open(icon_png_path)
+                self.logo_ctk_img = ctk.CTkImage(light_image=logo_img_pil, dark_image=logo_img_pil, size=(38, 38))
+                logo_icon_lbl = ctk.CTkLabel(header_top, image=self.logo_ctk_img, text="")
+                logo_icon_lbl.pack(side="left", padx=(0, 10))
+            except Exception as e:
+                print(f"Could not load sidebar logo icon: {e}")
+
         title_lbl = ctk.CTkLabel(
-            logo_frame, 
-            text="Poster Studio Desktop", 
+            header_top, 
+            text="Poster Studio", 
             font=ctk.CTkFont(size=20, weight="bold"),
             text_color="#c084fc"
         )
-        title_lbl.pack(anchor="w")
+        title_lbl.pack(side="left", anchor="w")
 
         # Software Branding Link (Clickable Author Watermark)
         author_btn = ctk.CTkButton(

@@ -68,6 +68,9 @@ poster-generator-a4-pdf-spect-cover-crop/
 ├── main.py                  # Entry launcher script
 ├── generate_pdf.py          # Batch CLI converter engine
 ├── Run_Poster_Studio.bat    # Windows batch launcher
+├── assets/                  # 🎨 Branding assets (icon.png & icon.ico)
+│   ├── icon.png
+│   └── icon.ico
 ├── requirements.txt         # Dependencies
 ├── README.md                # Documentation
 ├── .gitignore               # Git ignore rules
