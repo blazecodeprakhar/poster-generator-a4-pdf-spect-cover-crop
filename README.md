@@ -1,4 +1,4 @@
-# 🎨 Poster Studio Desktop
+# poster-generator-a4-pdf-spect-cover-crop
 
 [![Python Version](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org/)
 [![UI Framework](https://img.shields.io/badge/GUI-CustomTkinter-purple.svg)](https://github.com/TomSchimansky/CustomTkinter)
@@ -29,8 +29,8 @@ Developed by **[blazecodeprakhar](https://github.com/blazecodeprakhar)**.
 Clone the repository and install the dependencies:
 
 ```bash
-git clone https://github.com/blazecodeprakhar/poster-studio-desktop.git
-cd poster-studio-desktop
+git clone https://github.com/blazecodeprakhar/poster-generator-a4-pdf-spect-cover-crop.git
+cd poster-generator-a4-pdf-spect-cover-crop
 pip install -r requirements.txt
 ```
 
@@ -54,7 +54,7 @@ python generate_pdf.py
 ## 📁 Repository Structure
 
 ```
-poster-studio-desktop/
+poster-generator-a4-pdf-spect-cover-crop/
 ├── PosterStudioApp.py       # Main CustomTkinter Desktop GUI application
 ├── main.py                  # Entry launcher script
 ├── generate_pdf.py          # Batch CLI converter engine

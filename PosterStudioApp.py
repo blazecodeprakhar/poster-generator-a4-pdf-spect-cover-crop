@@ -161,7 +161,7 @@ class PosterStudioApp(ctk.CTk):
 
         # Progress Bar & Export Action Button
         action_frame = ctk.CTkFrame(self.sidebar, fg_color="transparent")
-        action_frame.pack(fill="x", padx=15, pady=(auto, 15), side="bottom")
+        action_frame.pack(fill="x", padx=15, pady=(10, 15), side="bottom")
 
         self.progress_bar = ctk.CTkProgressBar(action_frame, mode="determinate")
         self.progress_bar.set(0)
