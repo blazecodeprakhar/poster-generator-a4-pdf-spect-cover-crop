@@ -1,47 +1,12 @@
 import glob
 import os
 import re
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image
 
 def natural_sort_key(s):
     return [int(text) if text.isdigit() else text.lower() for text in re.split(r'(\d+)', s)]
 
-def draw_watermark(image, watermark_text="https://github.com/blazecodeprakhar"):
-    if not watermark_text:
-        return image
-
-    overlay = Image.new('RGBA', image.size, (255, 255, 255, 0))
-    draw = ImageDraw.Draw(overlay)
-
-    font_size = max(24, int(image.height * 0.015))
-    try:
-        font = ImageFont.truetype("arial.ttf", font_size)
-    except IOError:
-        font = ImageFont.load_default()
-
-    bbox = draw.textbbox((0, 0), watermark_text, font=font)
-    text_w = bbox[2] - bbox[0]
-    text_h = bbox[3] - bbox[1]
-
-    margin = int(image.height * 0.02)
-    padding_x = int(font_size * 0.6)
-    padding_y = int(font_size * 0.3)
-
-    x2 = image.width - margin
-    y2 = image.height - margin
-    x1 = x2 - text_w - (padding_x * 2)
-    y1 = y2 - text_h - (padding_y * 2)
-
-    # Draw sleek dark translucent rounded background pill
-    draw.rounded_rectangle([x1, y1, x2, y2], radius=12, fill=(15, 23, 42, 190), outline=(168, 85, 247, 140), width=3)
-    # Draw watermark text
-    draw.text((x1 + padding_x, y1 + padding_y - 2), watermark_text, fill=(255, 255, 255, 240), font=font)
-
-    converted_rgb = image.convert('RGBA')
-    watermarked = Image.alpha_composite(converted_rgb, overlay)
-    return watermarked.convert('RGB')
-
-def create_a4_poster_pdf(image_folder='.', output_pdf='color_posters_A4.pdf', dpi=300, watermark_text="https://github.com/blazecodeprakhar"):
+def create_a4_poster_pdf(image_folder='.', output_pdf='color_posters_A4.pdf', dpi=300):
     a4_w = int(8.27 * dpi)
     a4_h = int(11.69 * dpi)
     target_ratio = a4_h / a4_w
@@ -57,8 +22,7 @@ def create_a4_poster_pdf(image_folder='.', output_pdf='color_posters_A4.pdf', dp
         print("No images found!")
         return
 
-    print(f"Processing {len(image_files)} images for A4 Cover Fit ({a4_w}x{a4_h} px at {dpi} DPI)...")
-    print(f"Watermark: '{watermark_text}'")
+    print(f"Processing {len(image_files)} images for clean A4 Cover Fit ({a4_w}x{a4_h} px at {dpi} DPI)...")
 
     processed_pages = []
     for idx, filepath in enumerate(image_files, start=1):
@@ -80,11 +44,8 @@ def create_a4_poster_pdf(image_folder='.', output_pdf='color_posters_A4.pdf', dp
 
         cropped = img.crop(crop_box)
         resized = cropped.resize((a4_w, a4_h), Image.Resampling.LANCZOS)
-        
-        # Apply Watermark
-        final_page = draw_watermark(resized, watermark_text)
-        processed_pages.append(final_page)
-        print(f"Page {idx:02d}: {filename} ({w}x{h}) -> {crop_type} -> Watermarked A4 Page")
+        processed_pages.append(resized)
+        print(f"Page {idx:02d}: {filename} ({w}x{h}) -> {crop_type} -> Clean A4 Page")
 
     processed_pages[0].save(
         output_pdf,
@@ -93,7 +54,7 @@ def create_a4_poster_pdf(image_folder='.', output_pdf='color_posters_A4.pdf', dp
         resolution=float(dpi)
     )
     size_mb = os.path.getsize(output_pdf) / (1024 * 1024)
-    print(f"\nSUCCESS: Generated watermarked '{output_pdf}' ({size_mb:.2f} MB) with {len(processed_pages)} pages.")
+    print(f"\nSUCCESS: Generated clean '{output_pdf}' ({size_mb:.2f} MB) with {len(processed_pages)} pages.")
 
 if __name__ == '__main__':
     create_a4_poster_pdf()

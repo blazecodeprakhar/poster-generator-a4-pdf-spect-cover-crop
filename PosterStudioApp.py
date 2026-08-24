@@ -2,10 +2,11 @@ import os
 import glob
 import re
 import threading
+import webbrowser
 import tkinter as tk
 from tkinter import filedialog, messagebox
 import customtkinter as ctk
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image
 
 # Set CustomTkinter theme & appearance
 ctk.set_appearance_mode("Dark")
@@ -13,40 +14,6 @@ ctk.set_default_color_theme("blue")
 
 def natural_sort_key(s):
     return [int(text) if text.isdigit() else text.lower() for text in re.split(r'(\d+)', s)]
-
-def draw_watermark(image, watermark_text="https://github.com/blazecodeprakhar"):
-    if not watermark_text:
-        return image
-
-    overlay = Image.new('RGBA', image.size, (255, 255, 255, 0))
-    draw = ImageDraw.Draw(overlay)
-
-    font_size = max(24, int(image.height * 0.015))
-    try:
-        font = ImageFont.truetype("arial.ttf", font_size)
-    except IOError:
-        font = ImageFont.load_default()
-
-    bbox = draw.textbbox((0, 0), watermark_text, font=font)
-    text_w = bbox[2] - bbox[0]
-    text_h = bbox[3] - bbox[1]
-
-    margin = int(image.height * 0.02)
-    padding_x = int(font_size * 0.6)
-    padding_y = int(font_size * 0.3)
-
-    x2 = image.width - margin
-    y2 = image.height - margin
-    x1 = x2 - text_w - (padding_x * 2)
-    y1 = y2 - text_h - (padding_y * 2)
-
-    # Sleek dark translucent background box with border
-    draw.rounded_rectangle([x1, y1, x2, y2], radius=12, fill=(15, 23, 42, 190), outline=(168, 85, 247, 140), width=3)
-    draw.text((x1 + padding_x, y1 + padding_y - 2), watermark_text, fill=(255, 255, 255, 240), font=font)
-
-    converted_rgb = image.convert('RGBA')
-    watermarked = Image.alpha_composite(converted_rgb, overlay)
-    return watermarked.convert('RGB')
 
 class PosterStudioApp(ctk.CTk):
     def __init__(self):
@@ -61,6 +28,9 @@ class PosterStudioApp(ctk.CTk):
 
         self.setup_ui()
         self.auto_load_current_directory()
+
+    def open_github(self):
+        webbrowser.open("https://github.com/blazecodeprakhar")
 
     def setup_ui(self):
         # Grid layout: 2 columns (Sidebar 320px, Main workspace 1fr)
@@ -84,13 +54,19 @@ class PosterStudioApp(ctk.CTk):
         )
         title_lbl.pack(anchor="w")
 
-        author_lbl = ctk.CTkLabel(
-            logo_frame, 
-            text="by github.com/blazecodeprakhar", 
-            font=ctk.CTkFont(size=11),
-            text_color="#94a3b8"
+        # Software Branding Link (Clickable Author Watermark)
+        author_btn = ctk.CTkButton(
+            logo_frame,
+            text="🔗 by github.com/blazecodeprakhar",
+            font=ctk.CTkFont(size=11, weight="bold"),
+            fg_color="transparent",
+            text_color="#a855f7",
+            hover_color="#334155",
+            anchor="w",
+            height=22,
+            command=self.open_github
         )
-        author_lbl.pack(anchor="w")
+        author_btn.pack(anchor="w", pady=(2, 0))
 
         # File Selection Buttons
         btn_frame = ctk.CTkFrame(self.sidebar, fg_color="transparent")
@@ -121,7 +97,7 @@ class PosterStudioApp(ctk.CTk):
         settings_frame = ctk.CTkFrame(self.sidebar, fg_color="#1e293b", corner_radius=10)
         settings_frame.pack(fill="x", padx=15, pady=10)
 
-        sec_lbl = ctk.CTkLabel(settings_frame, text="⚙️ Poster & Watermark Settings", font=ctk.CTkFont(size=13, weight="bold"))
+        sec_lbl = ctk.CTkLabel(settings_frame, text="⚙️ Poster Settings", font=ctk.CTkFont(size=13, weight="bold"))
         sec_lbl.pack(anchor="w", padx=12, pady=(10, 5))
 
         # Paper Format
@@ -137,27 +113,30 @@ class PosterStudioApp(ctk.CTk):
         )
         self.opt_fit.pack(fill="x", padx=12, pady=(2, 8))
 
-        # Watermark Text
-        ctk.CTkLabel(settings_frame, text="Watermark Text:", font=ctk.CTkFont(size=11), text_color="#94a3b8").pack(anchor="w", padx=12)
-        self.entry_watermark = ctk.CTkEntry(settings_frame)
-        self.entry_watermark.insert(0, "https://github.com/blazecodeprakhar")
-        self.entry_watermark.pack(fill="x", padx=12, pady=(2, 6))
-
-        # Enable Watermark Checkbox
-        self.chk_watermark_var = ctk.BooleanVar(value=True)
-        self.chk_watermark = ctk.CTkCheckBox(
-            settings_frame, 
-            text="Enable Page Watermark", 
-            variable=self.chk_watermark_var,
-            font=ctk.CTkFont(size=12)
-        )
-        self.chk_watermark.pack(anchor="w", padx=12, pady=(2, 10))
-
         # Output PDF File Name
         ctk.CTkLabel(settings_frame, text="Output PDF Name:", font=ctk.CTkFont(size=11), text_color="#94a3b8").pack(anchor="w", padx=12)
         self.entry_pdf_name = ctk.CTkEntry(settings_frame)
         self.entry_pdf_name.insert(0, "color_posters_A4.pdf")
         self.entry_pdf_name.pack(fill="x", padx=12, pady=(2, 12))
+
+        # Software Attribution Box (Software UI Watermark)
+        branding_box = ctk.CTkFrame(self.sidebar, fg_color="#0f172a", corner_radius=10, border_width=1, border_color="#334155")
+        branding_box.pack(fill="x", padx=15, pady=(5, 10))
+
+        brand_title = ctk.CTkLabel(branding_box, text="⚡ Developer Attribution", font=ctk.CTkFont(size=11, weight="bold"), text_color="#e2e8f0")
+        brand_title.pack(anchor="w", padx=10, pady=(8, 2))
+
+        brand_btn = ctk.CTkButton(
+            branding_box,
+            text="🌐 github.com/blazecodeprakhar",
+            font=ctk.CTkFont(size=11, weight="bold"),
+            fg_color="#311042",
+            hover_color="#581c87",
+            text_color="#e9d5ff",
+            height=28,
+            command=self.open_github
+        )
+        brand_btn.pack(fill="x", padx=8, pady=(0, 8))
 
         # Progress Bar & Export Action Button
         action_frame = ctk.CTkFrame(self.sidebar, fg_color="transparent")
@@ -169,7 +148,7 @@ class PosterStudioApp(ctk.CTk):
 
         self.btn_export = ctk.CTkButton(
             action_frame, 
-            text="⚡ CREATE POSTER PDF", 
+            text="⚡ CREATE CLEAN POSTER PDF", 
             font=ctk.CTkFont(size=14, weight="bold"),
             fg_color="#a855f7",
             hover_color="#9333ea",
@@ -195,8 +174,24 @@ class PosterStudioApp(ctk.CTk):
         )
         self.lbl_workspace_title.pack(side="left")
 
+        header_actions = ctk.CTkFrame(ws_header, fg_color="transparent")
+        header_actions.pack(side="right")
+
+        self.btn_author_link = ctk.CTkButton(
+            header_actions,
+            text="⭐ GitHub Profile",
+            font=ctk.CTkFont(size=11, weight="bold"),
+            fg_color="#1e1b4b",
+            hover_color="#311042",
+            text_color="#c084fc",
+            width=110,
+            height=28,
+            command=self.open_github
+        )
+        self.btn_author_link.pack(side="left", padx=(0, 10))
+
         self.badge_pages = ctk.CTkLabel(
-            ws_header, 
+            header_actions, 
             text="0 Pages Loaded", 
             fg_color="#311042",
             text_color="#e9d5ff",
@@ -205,7 +200,7 @@ class PosterStudioApp(ctk.CTk):
             pady=4,
             font=ctk.CTkFont(size=12, weight="bold")
         )
-        self.badge_pages.pack(side="right")
+        self.badge_pages.pack(side="left")
 
         # Scrollable Thumbnail Grid
         self.scroll_grid = ctk.CTkScrollableFrame(self.workspace, fg_color="transparent")
@@ -240,7 +235,6 @@ class PosterStudioApp(ctk.CTk):
             self.render_thumbnails()
 
     def render_thumbnails(self):
-        # Clear existing scrollable frame
         for child in self.scroll_grid.winfo_children():
             child.destroy()
 
@@ -261,7 +255,6 @@ class PosterStudioApp(ctk.CTk):
 
         self.btn_export.configure(state="normal")
 
-        # Grid configuration for thumbnails (3 per row)
         cols = 3
         for idx, img_path in enumerate(self.image_paths):
             row = idx // cols
@@ -275,7 +268,6 @@ class PosterStudioApp(ctk.CTk):
             try:
                 img = Image.open(img_path)
                 w, h = img.size
-                # Create thumbnail with 1:1.414 aspect ratio container
                 thumb_w = 160
                 thumb_h = 226
                 img_ratio = h / w
@@ -300,7 +292,6 @@ class PosterStudioApp(ctk.CTk):
                 err_lbl = ctk.CTkLabel(card, text="[Image Error]", text_color="#ef4444")
                 err_lbl.pack(padx=8, pady=20)
 
-            # Card Footer with Title and Delete Button
             info_frame = ctk.CTkFrame(card, fg_color="transparent")
             info_frame.pack(fill="x", padx=8, pady=(0, 6))
 
@@ -324,10 +315,9 @@ class PosterStudioApp(ctk.CTk):
             messagebox.showwarning("Warning", "Please select poster images first.")
             return
 
-        self.btn_export.configure(state="disabled", text="Processing PDF...")
+        self.btn_export.configure(state="disabled", text="Processing Clean PDF...")
         self.progress_bar.set(0)
 
-        # Run in separate thread to prevent UI freezing
         thread = threading.Thread(target=self.generate_pdf_worker, daemon=True)
         thread.start()
 
@@ -340,8 +330,6 @@ class PosterStudioApp(ctk.CTk):
 
             fit_mode = self.opt_fit.get()
             is_cover = "Aspect Cover" in fit_mode
-            enable_watermark = self.chk_watermark_var.get()
-            watermark_text = self.entry_watermark.get().strip() if enable_watermark else ""
 
             output_filename = self.entry_pdf_name.get().strip()
             if not output_filename.endswith(".pdf"):
@@ -367,7 +355,6 @@ class PosterStudioApp(ctk.CTk):
 
                     resized = cropped.resize((a4_w, a4_h), Image.Resampling.LANCZOS)
                 else:
-                    # Contain mode
                     background = Image.new('RGB', (a4_w, a4_h), (255, 255, 255))
                     if img_ratio > target_ratio:
                         dh = a4_h
@@ -384,18 +371,13 @@ class PosterStudioApp(ctk.CTk):
                     background.paste(img_resized, (dx, dy))
                     resized = background
 
-                if enable_watermark and watermark_text:
-                    final_page = draw_watermark(resized, watermark_text)
-                else:
-                    final_page = resized
+                # Append clean page without any PDF watermark
+                processed_pages.append(resized)
 
-                processed_pages.append(final_page)
-                
-                # Update GUI progress bar safely
                 progress = idx / total
                 self.after(0, self.progress_bar.set, progress)
 
-            # Save PDF
+            # Save clean PDF
             processed_pages[0].save(
                 output_filename,
                 save_all=True,
@@ -409,15 +391,15 @@ class PosterStudioApp(ctk.CTk):
             self.after(0, self.on_pdf_error, str(e))
 
     def on_pdf_success(self, filename, page_count):
-        self.btn_export.configure(state="normal", text="⚡ CREATE POSTER PDF")
+        self.btn_export.configure(state="normal", text="⚡ CREATE CLEAN POSTER PDF")
         self.progress_bar.set(1.0)
 
         size_mb = os.path.getsize(filename) / (1024 * 1024)
-        msg = f"SUCCESS!\n\nPDF '{filename}' created successfully.\nPages: {page_count}\nSize: {size_mb:.2f} MB\nWatermark: {'Yes' if self.chk_watermark_var.get() else 'No'}"
+        msg = f"SUCCESS!\n\nClean PDF '{filename}' created successfully.\nPages: {page_count}\nSize: {size_mb:.2f} MB\nPDF Watermark: None (Clean)"
         messagebox.showinfo("Poster Studio Desktop", msg)
 
     def on_pdf_error(self, err_msg):
-        self.btn_export.configure(state="normal", text="⚡ CREATE POSTER PDF")
+        self.btn_export.configure(state="normal", text="⚡ CREATE CLEAN POSTER PDF")
         messagebox.showerror("Error Creating PDF", f"An error occurred:\n{err_msg}")
 
 if __name__ == "__main__":
