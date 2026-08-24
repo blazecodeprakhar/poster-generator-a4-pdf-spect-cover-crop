@@ -5,25 +5,24 @@
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Author](https://img.shields.io/badge/author-blazecodeprakhar-orange.svg)](https://github.com/blazecodeprakhar)
 
-**Poster Studio Desktop** is a modern, high-performance desktop application to turn any poster images into high-resolution, print-ready A4 PDFs. It automatically applies an **Aspect Cover Fit** algorithm to ensure posters cover 100% of the A4 page without ugly white borders, distortion, or excessive zooming.
+**Poster Studio Desktop** is a modern, high-performance desktop software to turn any poster images into high-resolution, print-ready A4 PDFs. It automatically applies an **Aspect Cover Fit** algorithm to ensure posters cover 100% of the A4 page without ugly white borders, distortion, or excessive zooming.
 
 Developed by **[blazecodeprakhar](https://github.com/blazecodeprakhar)**.
 
 ---
 
-## 💻 How to Use the Software
+## ⚡ 1-Click Launch Software (No Python Required)
 
-Choose the easiest option for your system:
+> 🚀 **`PosterStudio.exe` is located right in the main root folder of this repository!**
 
-### 🌟 Option 1: Standalone Software Executable (Easiest - No Python Required)
-1. Download the latest **`PosterStudio`** executable folder from the GitHub Releases page or `dist/` directory.
-2. Double-click **`PosterStudio.exe`** to launch the software directly on Windows!
+1. Simply double-click **[`PosterStudio.exe`](PosterStudio.exe)** in the top folder to launch the software directly on Windows!
+2. No installation, Python setup, or command line required.
 
 ---
 
-### 💻 Option 2: Run Raw Source Code (For Developers)
+## 💻 Developer Guide: Running Raw Source Code
 
-If you have Python installed on your PC, follow these quick steps:
+If you prefer to run or modify the Python source code directly:
 
 1. **Clone the repository:**
    ```bash
@@ -37,7 +36,7 @@ If you have Python installed on your PC, follow these quick steps:
    ```
 
 3. **Launch the software:**
-   - **On Windows (1-Click)**: Double-click `Run_Poster_Studio.bat` in the folder.
+   - **On Windows (1-Click Batch)**: Double-click `Run_Poster_Studio.bat`.
    - **Via Terminal**:
      ```bash
      python main.py
@@ -64,10 +63,11 @@ If you have Python installed on your PC, follow these quick steps:
 
 ```
 poster-generator-a4-pdf-spect-cover-crop/
-├── PosterStudioApp.py       # Main CustomTkinter Desktop GUI application
+├── PosterStudio.exe         # 🚀 1-Click Standalone Desktop Software
+├── PosterStudioApp.py       # Main CustomTkinter Desktop GUI source code
 ├── main.py                  # Entry launcher script
 ├── generate_pdf.py          # Batch CLI converter engine
-├── Run_Poster_Studio.bat    # Double-clickable Windows batch launcher
+├── Run_Poster_Studio.bat    # Windows batch launcher
 ├── requirements.txt         # Dependencies
 ├── README.md                # Documentation
 ├── .gitignore               # Git ignore rules

@@ -1,5 +1,6 @@
 # PyInstaller Build Files
 build/
+dist/
 *.spec
 
 # Python Bytecode
