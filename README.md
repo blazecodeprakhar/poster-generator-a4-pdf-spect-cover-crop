@@ -59,10 +59,9 @@ poster-studio-desktop/
 ├── main.py                  # Entry launcher script
 ├── generate_pdf.py          # Batch CLI converter engine
 ├── Run_Poster_Studio.bat    # Double-clickable Windows launcher
-├── color (1).jpeg...        # Sample poster images (1-22)
-├── color_posters_A4.pdf     # Generated A4 watermarked PDF output
 ├── requirements.txt         # Dependencies
 ├── README.md                # Documentation
+├── .gitignore               # Git ignore rules
 └── LICENSE                  # MIT License
 ```
 
