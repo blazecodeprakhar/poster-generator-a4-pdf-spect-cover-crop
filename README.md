@@ -59,6 +59,18 @@ If you prefer to run or modify the Python source code directly:
 
 ---
 
+## 📸 Screenshots & Software Interface
+
+### 🖥️ Poster Studio Desktop Interface
+![Poster Studio Desktop Interface](assets/app_screenshot.png)
+
+### 🖼️ Output Poster Examples
+| Example Poster 1 | Example Poster 2 |
+| :---: | :---: |
+| ![Poster Example 1](assets/screenshot1.png) | ![Poster Example 2](assets/screenshot2.png) |
+
+---
+
 ## 📁 Repository Structure
 
 ```
@@ -68,9 +80,12 @@ poster-generator-a4-pdf-spect-cover-crop/
 ├── main.py                  # Entry launcher script
 ├── generate_pdf.py          # Batch CLI converter engine
 ├── Run_Poster_Studio.bat    # Windows batch launcher
-├── assets/                  # 🎨 Branding assets (icon.png & icon.ico)
+├── assets/                  # 🎨 Branding & Screenshot assets
+│   ├── app_screenshot.png
 │   ├── icon.png
-│   └── icon.ico
+│   ├── icon.ico
+│   ├── screenshot1.png
+│   └── screenshot2.png
 ├── requirements.txt         # Dependencies
 ├── README.md                # Documentation
 ├── .gitignore               # Git ignore rules
